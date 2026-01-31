@@ -1,142 +1,92 @@
-## SecureAuction
+# BidSecure - Private Auctions
 
-SecureAuction is a robust web application designed for online auctions with enhanced security features. Bidders can confidently place bids on auctions, while auctioneers can seamlessly list items for bidding. SecureAuction harnesses the power of the Nillion network to provide a highly secure bidding environment, safeguarding users from data breaches and ensuring a trustworthy auction process.
+BidSecure is a next-generation auction platform that combines privacy-preserving computation with a modern, ethereal "Pastel Sparkly" aesthetic. Built on the **Nillion Network**, it allows registered users to place blind bids on items, ensuring that bid amounts remain encrypted and confidential until the auction closes.
 
-## Features
+## ✨ New Features: Pastel Sparkly Theme
+The application has been completely redesigned with a **Glassmorphism** and **Pastel Gradient** theme:
+- **Glass Panels**: Modern frosted glass containers for all content.
+- **Dynamic Backgrounds**: Floating blobs and subtle noise textures that bring the UI to life.
+- **Micro-Interactions**: Smooth hover effects, animated gradients, and responsive layouts.
+- **Unified Design**: Consistent styling across Home, Login, Signup, and Dashboards.
 
-- **Secure Bidding:** Leverages the Nillion Network to ensure secure and private bid placements.
-- **Auction Posting:** Streamlined process for auctioneers to list and manage items for auction.
-- **User-Friendly Interface:** Designed with simplicity and ease of use in mind for both bidders and auctioneers.
-- **Item Search:** Quickly find and bid on specific items of interest.
-- **Real-Time Updates:** Stay informed with live updates on auction status and bid activity.
+## Core Features
+- **Secure Blind Bidding**: Leverages Nillion's multi-party computation (MPC) to keep bids private.
+- **Role-Based Dashboards**: tailored experiences for both **Auctioneers** (listing items) and **Bidders** (placing bids).
+- **Real-Time Updates**: Status indicators for live, upcoming, and closed auctions.
+- **Search & Filter**: Easily find auctions by status (Ongoing, Completed) or keyword.
 
-## Table of Contents
+## 🛠 Installation & Setup
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [For Bidders](#for-bidders)
-  - [For Auctioneers](#for-auctioneers)
-- [Demo](#demo)
-- [Security](#security)
-- [Contributing](#contributing)
-- [License](#license)
+### Prerequisites
+- Python 3.10+
+- [nillion-sdk](https://docs.nillion.com/nillion-sdk-and-tools)
+- Redis (for Celery background tasks)
 
-## Installation
-You need to have [nillion-sdk](https://docs.nillion.com/nillion-sdk-and-tools) installed. Follow through the given link to install it.
-
-Now create a virtual environment, activate it and install the requirements.
+### Step 1: Environment Setup
+Create a virtual environment and install dependencies:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Now you need to start the local nillion network.
+### Step 2: Nillion Network
+Start the local Nillion devnet:
 ```bash
 cd auction/nillion
 ./bootstrap-local-environment.sh
-cd ../..
+# Keep this terminal running!
 ```
 
-Run migrate command.
+### Step 3: Database & Redis
+Apply migrations and ensure Redis is running:
 ```bash
-python3 manage.py migrate
-```
-You need to have `redis-server` installed in you machine. You can install it with:
-```bash
-sudo apt install redis-server
-```
-Then start it with:
-```bash
+python manage.py migrate
 sudo systemctl start redis-server
 ```
-Now we can run the application. Run following 4 commands in seperate terminal.
+
+### Step 4: Run the Application
+You will need **4 separate terminals** to run the full stack:
+
+**Terminal 1: Django Server**
 ```bash
+source .venv/bin/activate
 python manage.py runserver
+```
+
+**Terminal 2: Tailwind CSS Watcher** (Compiles the pastel theme)
+```bash
+source .venv/bin/activate
 python manage.py tailwind start
-celery -A bidding beat --loglevel=info
+```
+
+**Terminal 3: Celery Worker** (Processes bids)
+```bash
+source .venv/bin/activate
 celery -A bidding worker --loglevel=info
 ```
-### Prerequisites
 
-- Python
+**Terminal 4: Celery Beat** (Scheduled tasks)
+```bash
+source .venv/bin/activate
+celery -A bidding beat --loglevel=info
+```
 
-
-## Usage
+## 🚀 Usage
 
 ### For Bidders
-
-1. **Register/Login:**
-   - Create an account or log in with your existing credentials.
-
-2. **Browse Auctions:**
-   - View a list of available auctions and detailed information about each item.
-
-3. **Place a Bid:**
-   - Select an auction and enter your bid amount.
-   - Bids are securely processed using Nillion Network.
-
-4. **Monitor Auctions:**
-   - Track your bids and get real-time updates on auction status.
+1.  **Sign Up**: Create a "Bidder" account.
+2.  **Browse**: Explore the "Live Now" auctions on your dashboard.
+3.  **Bid**: Place a blind bid. Your amount is encrypted via Nillion.
+4.  **Win**: Wait for the auction to close to see if you won!
 
 ### For Auctioneers
-
-1. **Register/Login:**
-   - Create an account or log in with your existing credentials.
-
-2. **Post an Auction:**
-   - Click on "Add Auction" and fill out the item details, including title, description, and starting bid.
-
-3. **Manage Auctions:**
-   - View your posted auctions.
-   - Monitor bids and auction progress.
-
-## Demo
-
-
-https://github.com/Sandesh-Pyakurel/Bidding/assets/82999440/019af915-c659-41ab-a2c0-c3f39da5ee07
-
-
+1.  **Sign Up**: Create an "Auctioneer" account.
+2.  **Create**: List a new item with a base price and image.
+3.  **Manage**: Track bids and close auctions from your dashboard.
 
 ## Security
-
-BidSecure prioritizes the security and privacy of user data. We use Nillion Network to ensure that all bids are encrypted and securely processed, preventing data leakage and unauthorized access. For more details, visit the [Nillion website](https://www.nillion.com).
-
-## Contributing
-
-We welcome contributions to BidSecure! Please follow these steps to contribute:
-
-1. **Fork the Repository**: Click the "Fork" button on GitHub to create your copy.
-
-2. **Clone Your Fork**:
-   ```bash
-   git clone https://github.com/Sandesh-Pyakurel/Bidding.git
-   ```
-
-3. **Create a Branch**:
-   ```bash
-   git checkout -b your-branch-name
-   ```
-
-4. **Make Changes**: Implement your changes.
-
-5. **Commit Your Changes**:
-   ```bash
-   git commit -m "Description of your changes"
-   ```
-
-6. **Push Your Changes**:
-   ```bash
-   git push -u origin your-branch-name
-   ```
-
-7. **Create a Pull Request**: Submit your changes for review.
-
+BidSecure uses the **Nillion Network** to decentralize and encrypt sensitive auction data. Unlike traditional databases, bid values are split and distributed across nodes, making them mathematically impossible to expose without authorization.
 
 ## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
----
-
-Thank you for using BidSecure! Happy bidding!
+MIT License. See [LICENSE](LICENSE) for details.
