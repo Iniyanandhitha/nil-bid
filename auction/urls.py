@@ -8,6 +8,7 @@ from .views import (
     add_auction_view,
     bidder_view,
     auction_detail_view,
+    auction_view,
     )
 
 urlpatterns = [
@@ -16,7 +17,8 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('logout/', logout_view, name='logout'),
     path('auctioner/', auctioner_view, name='auctioner'),
-    path('auctioner/add/', add_auction_view, name='add-auction'),
+    path('create_auction/', add_auction_view, name='create_auction'),
     path('bidder/', bidder_view, name='bidder'),
-    path('auction/<int:id>', auction_detail_view, name='auction-detail'),
+    path('auctions/', auction_view, name='auctions'),
+    path('auction/<int:id>/', auction_detail_view, name='auction_detail'),
 ]

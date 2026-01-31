@@ -2,147 +2,279 @@
 {% load static %}
 {{ request.user }}
 {% block title %}
-    Auction Bidding
+Auction Bidding
 {% endblock title %}
 
-{% block style %}
-    <style>
-        form>p>label {
-            margin-bottom: 0.5rem;
-            color: #333;
-            letter-spacing: 1px;
-        }
-        form>p>input {
-            padding: 0.1rem;
-            margin-bottom: 1rem;
-            border: 1px solid black;
-            border-radius: .8rem !important;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        input:focus {
-            border-color: #cf1cc4 !important;
-            box-shadow: 0 0 0 2px rgba(207, 28, 196, 0.4) !important;
-        }
-    </style>
-{% endblock style %}
 
 {% block body %}
-<header class="mx-8 flex justify-between my-[16px] h-full">
-    <h1 class="text-center text-2xl font-bold flex items-center"><a href="/">BidSecure</a></h1>
-    <div class="flex items-center">
-        <img src="{% static 'images/user_icon.png' %}" alt="User">
-    </div>
-</header>
-<div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-6 lg:px-8">
-    <div class="max-w-7xl w-full bg-white shadow-lg rounded-lg overflow-hidden p-6 space-y-6">
-        <div class="lg:flex lg:space-x-6">
-            <!-- Left Form Section -->
-            <div class="lg:w-2/3 space-y-6">
-                <!-- Auction Details -->
-                <div class="bg-stone-100 p-6 rounded-lg shadow-sm">
-                    {% if auction.is_closed %}
-                    <div class="bg-red-200 w-full font-bold text-center py-2 mb-4 rounded-lg ">This auction has already ended</div>
+<!-- Breadcrumb -->
+<nav class="flex mb-8" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="/"
+                class="inline-flex items-center text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                <i class="fas fa-home mr-2"></i> Home
+            </a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-slate-600" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <a href="{% url 'auctions' %}"
+                    class="ml-1 text-sm font-medium text-slate-400 hover:text-white md:ml-2 transition-colors">Auctions</a>
+                <div class="mb-6 flex items-center text-sm text-slate-500">
+                    <a href="{% url 'home' %}" class="hover:text-fuchsia-600 transition-colors">Home</a>
+                    <i class="fas fa-chevron-right mx-2 text-xs opacity-50"></i>
+                    <a href="{% url 'auctions' %}" class="hover:text-fuchsia-600 transition-colors">Auctions</a>
+                    <i class="fas fa-chevron-right mx-2 text-xs opacity-50"></i>
+                    <span class="text-slate-800 font-semibold">{{ auction.name }}</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    <!-- Image & Info Column -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Main Image Card -->
+                        <div class="glass-panel p-2 rounded-3xl">
+                            <div class="relative aspect-w-16 aspect-h-9 rounded-2xl overflow-hidden bg-slate-100">
+                                {% if auction.image %}
+                                <img src="{{ auction.image.url }}" alt="{{ auction.name }}"
+                                    class="object-cover w-full h-full hover:scale-105 transition-transform duration-700">
+                                {% else %}
+                                <div class="flex items-center justify-center h-full bg-slate-50 text-slate-300">
+                                    <i class="fas fa-image text-6xl"></i>
+                                </div>
+                                {% endif %}
+
+                                <div class="absolute top-4 right-4">
+                                    {% if auction.is_closed %}
+                                    <span
+                                        class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-red-100 text-red-800 shadow-lg border border-red-200">
+                                        Closed
+                                    </span>
+                                    {% else %}
+                                    <span
+                                        class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-emerald-100 text-emerald-800 shadow-lg border border-emerald-200 animate-pulse">
+                                        Live Auction
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description Card -->
+                        <div class="glass-panel p-8 rounded-3xl">
+                            <h1 class="text-3xl font-extrabold text-slate-900 mb-4">{{ auction.name }}</h1>
+                            <div class="prose prose-slate max-w-none">
+                                <p class="text-slate-600 leading-relaxed text-lg">{{ auction.description }}</p>
+                            </div>
+
+                            <div class="mt-8 pt-6 border-t border-slate-200 grid grid-cols-2 gap-6">
+                                <div>
+                                    <span
+                                        class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">Auctioneer</span>
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs ring-2 ring-white shadow-sm">
+                                            {{ auction.auctioner.username|first|upper }}
+                                        </div>
+                                        <span class="font-medium text-slate-700">{{ auction.auctioner.username }}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span
+                                        class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">Total
+                                        Bids</span>
+                                    <span class="font-mono font-bold text-slate-800 text-lg flex items-center gap-2">
+                                        <i class="fas fa-layer-group text-fuchsia-500"></i> {{ auction.bid_count }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bidding Column -->
+                    <div class="space-y-6">
+                        <!-- Bidding Panel -->
+                        <div class="glass-panel p-8 rounded-3xl sticky top-24 border-2 border-fuchsia-100">
+                            <div class="mb-6">
+                                <p class="text-sm text-slate-500 font-medium uppercase tracking-wide mb-1">Current Base
+                                    Price</p>
+                                <div class="flex items-baseline gap-1">
+                                    <span
+                                        class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">${{
+                                        auction.base_price }}</span>
+                                    <span class="text-slate-400 font-medium">USD</span>
+                                </div>
+                            </div>
+
+                            {% if not auction.is_closed %}
+                            {% if user.is_authenticated %}
+                            {% if user.is_auctioner %}
+                            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-start gap-3">
+                                <i class="fas fa-info-circle text-indigo-500 mt-1"></i>
+                                <p class="text-sm text-indigo-800">You are the auctioneer. You cannot bid on your own
+                                    auction, but you can monitor its progress.</p>
+                            </div>
+                            {% else %}
+                            {% if can_bidder_apply %}
+                            <form method="post" class="space-y-6">
+                                {% csrf_token %}
+                                <div>
+                                    <label for="{{ form.amount.id_for_label }}"
+                                        class="block text-sm font-bold text-slate-700 mb-2">
+                                        Your Bid Amount
+                                    </label>
+                                    <div class="relative">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <span class="text-slate-400 font-bold">$</span>
+                                        </div>
+                                        {{ form.amount }}
+                                    </div>
+                                    {% if form.amount.errors %}
+                                    <p class="mt-2 text-sm text-red-500">{{ form.amount.errors.0 }}</p>
+                                    {% endif %}
+                                    <p class="mt-2 text-xs text-slate-500">
+                                        <i class="fas fa-lock text-fuchsia-400 mr-1"></i>
+                                        Encrypted via Nillion MPC
+                                    </p>
+                                </div>
+
+                                <button type="submit"
+                                    class="w-full glass-btn py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transform active:scale-95 transition-all flex items-center justify-center gap-2 group">
+                                    Place Secure Bid <i
+                                        class="fas fa-check-circle group-hover:scale-110 transition-transform"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
+                                <div
+                                    class="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-check text-emerald-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-emerald-800 font-bold mb-1">Bid Placed!</h3>
+                                <p class="text-sm text-emerald-600">You have successfully participated in this auction.
+                                    Good luck!</p>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            {% else %}
+                            <div class="text-center py-6">
+                                <p class="text-slate-600 mb-4">Log in to participate in this secure auction.</p>
+                                <a href="{% url 'login' %}?next={{ request.path }}"
+                                    class="inline-block w-full glass-btn py-3 rounded-xl">
+                                    Log In to Bid
+                                </a>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <i class="fas fa-check text-2xl text-emerald-400"></i>
+                        </div>
+                        <h3 class="mt-2 text-xl font-bold text-white">Bid Placed Successfully</h3>
+                        <p class="mt-2 text-slate-400">Your bid is encrypted and secured on the network.</p>
+                    </div>
                     {% endif %}
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Auction Details</h2>
-                    <div class="space-y-2">
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Auction ID:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.id }}</p>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- Right Column: Image & Schedule -->
+            <div class="lg:col-span-1 space-y-8">
+                <!-- Image Card -->
+                <div class="glass-panel rounded-2xl p-4 border border-white/10">
+                    <div
+                        class="aspect-w-4 aspect-h-3 rounded-xl overflow-hidden bg-slate-900 mb-4 border border-white/5 relative group">
+                        {% if auction.image %}
+                        <img src="{{ auction.image.url }}" alt="{{ auction.name }}"
+                            class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-50">
                         </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Name:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.name }}</p>
+                        {% else %}
+                        <div class="flex items-center justify-center h-64 text-slate-700 bg-slate-800">
+                            <i class="fas fa-image text-5xl"></i>
                         </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Description:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Schedule/Time Card -->
+                <div class="glass-panel rounded-2xl p-8 border border-white/10">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                        <i class="far fa-clock text-fuchsia-400"></i> Time Remaining
+                    </h3>
+
+                    <div class="space-y-6">
+                        <div>
+                            <span class="text-xs text-slate-500 uppercase font-semibold">Ends On</span>
+                            <p class="text-2xl font-mono font-bold text-white tracking-tight mt-1">{{
+                                auction.ending_date|date:"M d, Y" }}</p>
                         </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Base Price:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.base_price }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Auctioneer:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.auctioner }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Starting Date:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.created_date }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Ending Date:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.ending_date }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Status:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.is_closed|yesno:"Closed,Open" }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Bids Count:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.bid_count }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Max Bids:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.max_bids }}</p>
-                        </div>
-                        <div class="flex items-center">
-                            <label class="w-1/3 text-gray-600 font-semibold">Winner:</label>
-                            <p class="w-2/3 text-gray-800">{{ auction.get_winner }}</p>
+                        <!-- Progress bar mock -->
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div>
+                                    <span
+                                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-indigo-200 bg-indigo-900/50 border border-indigo-500/30">
+                                        In Progress
+                                    </span>
+                                </div>
+                            </div>
+                            <div
+                                class="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-slate-800 border border-white/5 shadow-inner">
+                                <div style="width:75%"
+                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-fuchsia-500 to-indigo-500 animate-pulse">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Bidding Form -->
-                {% if user.is_auctioner %}
-                <div class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg text-lg font-semibold mt-4 hover:bg-gray-400 text-center">
-                    Only Bidder Can Apply.
-                </div>
-                {% else %}
-                <div class="bg-stone-100 p-6 rounded-lg shadow-sm">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Place Your Bid</h2>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        {% if auction.is_closed %}
-                        <div class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg text-lg font-semibold mt-4 hover:bg-gray-400 text-center">
-                            Auction has already ended.
-                        </div>
-                        {% endif%}
-                        {% if not auction.is_closed %}
-                        {% if not user.is_auctioner %}
-                        {% if can_bidder_apply %}
-                        <button type="submit" class="w-full bg-[#cf1cc4] text-white py-2 px-4 rounded-lg text-lg font-semibold mt-4 hover:bg-blue-700 ">
-                            Apply
-                        </button>
-                        
-                        {% endif %}
-                        {% if not can_bidder_apply %}
-                        <div class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg text-lg font-semibold mt-4 hover:bg-gray-400 text-center">
-                            You have already applied.
-                        </div>
-                        {% endif %}
-                        {% endif %}
-                        {% endif %}
-                    </form>
-                </div>
-                {% endif  %}
             </div>
-            <!-- Right Image & Calendar Section -->
-            <div class="lg:w-1/3 space-y-6">
-                <!-- Image Preview -->
-                <div class="bg-stone-100 p-6 rounded-lg shadow-sm">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Preview</h2>
-                    <img src="{{ auction.image.url }}" alt="Auction Item" class="w-full h-auto rounded-lg object-cover">
-                </div>
-                <!-- Calendar -->
-                <div class="bg-stone-100 p-6 rounded-lg shadow-sm">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Bidding Schedule</h2>
-                    <div class="relative">
-                        <input type="date" disabled value="{{ auction.ending_date|date:'Y-m-d' }}" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg focus:border-blue-500 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300">
-                    </div>
-                </div>
             </div>
-        </div>
-    </div>
-</div>
-{% include "footer.html" %}
-{% endblock body %}
+
+            <style>
+                /* Scoped form styles */
+                form p {
+                    margin-bottom: 1.5rem;
+                }
+
+                form label {
+                    display: block;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    color: #94a3b8;
+                    /* slate-400 */
+                    margin-bottom: 0.5rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+
+                form input[type="text"],
+                form input[type="number"],
+                form input[type="file"] {
+                    display: block;
+                    width: 100%;
+                    border-radius: 0.75rem;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background-color: rgba(30, 41, 59, 0.5);
+                    /* slate-800/50 */
+                    color: white;
+                    padding: 0.875rem 1rem;
+                    transition: all 0.2s;
+                    font-family: monospace;
+                }
+
+                form input:focus {
+                    border-color: #d946ef;
+                    /* fuchsia-500 */
+                    box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.2), 0 0 15px rgba(217, 70, 239, 0.1);
+                    background-color: rgba(30, 41, 59, 0.8);
+                    outline: none;
+                }
+            </style>
+            {% endblock body %}

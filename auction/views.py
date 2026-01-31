@@ -18,8 +18,23 @@ def home_view(request):
 
 def auction_view(request):
     template = loader.get_template('auctions.html')
+    
+    # Fetch active auctions
+    auctions = Auction.objects.filter(is_closed=False).order_by('-created_date')
+    
+    # Basic search
+    search_query = request.GET.get('search')
+    if search_query:
+        auctions = auctions.filter(
+            Q(name__icontains=search_query) | Q(description__icontains=search_query)
+        )
 
-    return HttpResponse(template.render(request=request))
+    context = {
+        'auctions': auctions,
+        'search_query': search_query
+    }
+
+    return HttpResponse(template.render(context=context, request=request))
 
 def user_signup(request):
     if request.method == 'POST':

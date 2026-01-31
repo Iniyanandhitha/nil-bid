@@ -1,40 +1,119 @@
 {% extends 'base.html'%}
-{% load static tailwind_tags %}
+{% load static %}
 
 {% block title %}
-    BidSecure
+Browse Auctions - BidSecure
 {% endblock %}
+
 {% block body %}
-<div class="min-h-screen">
-    <header class="mx-8 flex justify-between my-[16px] h-full">
-        <h1 class="text-center text-2xl font-bold">BidSecure</h1>
-        <div>
-            <input type="text" placeholder="Search auction items"
-                class="border-2 border-gray-50 rounded-2xl px-4 py-2 w-[500px] h-[50px] shadow-lg">
-        </div>
-        <div>
-            <img src="{% static 'images/user_icon.png' %}" alt="User">
-        </div>
-    </header>
-    <section class="grid grid-cols-5 border-t"> 
-        <div class="bg-white border-r-4 sticky px-8 min-h-[90vh] flex flex-col">
-            <div class="p-4 border-b">
-                <h2 class="text-lg font-semibold">Filters</h2>
+<!-- Page Header -->
+<div
+    class="relative -mt-8 mx-[-1rem] sm:mx-[-1.5rem] lg:mx-[-2rem] mb-12 py-16 px-4 sm:px-6 lg:px-8 overflow-hidden rounded-b-[3rem] shadow-sm bg-white/30 backdrop-blur-sm border-b border-white/40">
+    <div class="absolute inset-0 bg-gradient-to-r from-fuchsia-100/50 via-indigo-100/50 to-cyan-100/50"></div>
+    <!-- Blurry blobs for pastel feel -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-fuchsia-200/40 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl"></div>
+
+    <div class="relative max-w-7xl mx-auto text-center z-10">
+        <h1 class="text-4xl font-extrabold text-slate-900 sm:text-5xl drop-shadow-sm">
+            Live Cosmic Auctions
+        </h1>
+        <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-600 font-light tracking-wide">
+            Discover rare assets and bid with <span class="text-fuchsia-600 font-semibold">absolute privacy</span>.
+        </p>
+    </div>
+</div>
+
+<div class="flex flex-col lg:flex-row gap-8">
+    <!-- Sidebar Filters -->
+    <aside class="w-full lg:w-64 flex-shrink-0">
+        <div class="glass-panel p-6 rounded-2xl sticky top-24">
+            <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-200 pb-4">
+                <svg class="h-5 w-5 text-fuchsia-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+                Filters
+            </h2>
+
+            <nav class="space-y-2">
+                <a href="#"
+                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-200 shadow-sm">
+                    <span class="truncate">All Auctions</span>
+                    <span
+                        class="ml-auto bg-fuchsia-100 py-0.5 px-2 rounded-full text-xs text-fuchsia-600 group-hover:bg-fuchsia-200">12</span>
+                </a>
+
+                <a href="#"
+                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-white hover:text-fuchsia-600 hover:shadow-md transition-all border border-transparent hover:border-slate-100">
+                    <span class="truncate">Live Now</span>
+                </a>
+
+                <a href="#"
+                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-white hover:text-fuchsia-600 hover:shadow-md transition-all border border-transparent hover:border-slate-100">
+                    <span class="truncate">Ending Soon</span>
+                </a>
+
+                <a href="#"
+                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-white hover:text-fuchsia-600 hover:shadow-md transition-all border border-transparent hover:border-slate-100">
+                    <span class="truncate">Closed</span>
+                </a>
+            </nav>
+
+            <div class="mt-8 pt-6 border-t border-slate-200">
+                <a href="{% url 'create_auction' %}"
+                    class="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:from-fuchsia-600 hover:to-indigo-600 transition-all transform hover:-translate-y-0.5">
+                    <span class="mr-2 text-lg">+</span> Post Auction
+                </a>
             </div>
-            <div class="p-4 space-y-3">
-                <a href="#" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-check-circle"></i> Completed</a>
-                <a href="#" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-clock"></i> Ongoing</a>
-                <a href="#" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-calendar-alt"></i> Upcoming</a>
-                <a href="#" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-plus"></i> Add Item to Auction</a>
-            </div>
         </div>
-        <div class="col-span-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-[24px] my-[24px]">
-            {% for _ in '123' %}
-                {% include 'auctions/card.html' %}
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+        <!-- Search & Sort (Mobile only) -->
+        <div class="mb-6 lg:hidden">
+            <input type="text" placeholder="Search auctions..."
+                class="glass-input block w-full rounded-xl sm:text-sm shadow-sm py-3 px-4">
+        </div>
+
+        <!-- Auction Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for auction in auctions %}
+            {% include 'auctions/card.html' with auction=auction %}
+            {% empty %}
+            <!-- Empty State -->
+            <div
+                class="col-span-full text-center py-16 glass-panel rounded-2xl border-2 border-dashed border-slate-300">
+                <div
+                    class="mx-auto h-20 w-20 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-200">
+                    <svg class="h-10 w-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                </div>
+                <h3 class="mt-2 text-lg font-medium text-slate-800">No auctions found</h3>
+                <p class="mt-1 text-sm text-slate-500">Get started by creating a new auction in the void.</p>
+                <div class="mt-8">
+                    <a href="{% url 'create_auction' %}"
+                        class="inline-flex items-center px-6 py-3 border border-transparent shadow-lg text-sm font-medium rounded-full text-white bg-gradient-to-r from-fuchsia-500 to-indigo-500 hover:from-fuchsia-600 hover:to-indigo-600 transition-all transform hover:-translate-y-0.5">
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        New Auction
+                    </a>
+                </div>
+            </div>
             {% endfor %}
+
+            {% if not auctions %}
+            <!-- This block is just for visual testing if backend is not sending data yet -->
+            {% endif %}
         </div>
     </div>
-    
-</section>
-{% include "footer.html" %}
+</div>
 {% endblock %}

@@ -1,8 +1,7 @@
- 
 {% extends 'base.html'%}
 {% load static tailwind_tags %}
 
- {% comment %} <h2>Auctioner Page</h2>
+{% comment %} <h2>Auctioner Page</h2>
 {{ request.user }}
 
 <a href="{% url 'add-auction' %}">Add Auction</a>
@@ -10,55 +9,133 @@
 <hr>
 
 {% for auction in auction_list %}
-    <p>Auction id: {{ auction.id }}</p>
-    <p>Name: {{ auction.name }}</p>
-    <p>Description: {{ auction.description }}</p>
-    <img src="{{ auction.image.url }}" alt="">
-    <p>Base Price: {{ auction.base_price }}</p>
-    <p>Auctioner: {{ auction.auctioner }}</p>
-    <p>Starting date: {{ auction.created_date }}</p>
-    <p>Ending date: {{ auction.ending_date }}</p>
-    <p>Is closed: {{ auction.is_closed }}</p>
-    <p>Bids count: {{ auction.bid_count }}</p>
-    <p>Max bids: {{ auction.max_bids }}</p>
-    <p>Winner: {{ auction.get_winner }}</p>
-    <hr>
-{% endfor %}  {% endcomment %}
+<p>Auction id: {{ auction.id }}</p>
+<p>Name: {{ auction.name }}</p>
+<p>Description: {{ auction.description }}</p>
+<img src="{{ auction.image.url }}" alt="">
+<p>Base Price: {{ auction.base_price }}</p>
+<p>Auctioner: {{ auction.auctioner }}</p>
+<p>Starting date: {{ auction.created_date }}</p>
+<p>Ending date: {{ auction.ending_date }}</p>
+<p>Is closed: {{ auction.is_closed }}</p>
+<p>Bids count: {{ auction.bid_count }}</p>
+<p>Max bids: {{ auction.max_bids }}</p>
+<p>Winner: {{ auction.get_winner }}</p>
+<hr>
+{% endfor %} {% endcomment %}
 
 {% block title %}
-    BidSecure
+My Auctions - BidSecure
 {% endblock %}
+
 {% block body %}
-<div class="min-h-screen">
-    {% include "header.html" %}
-    <section class="grid grid-cols-5 border-t"> 
-        <div class="bg-white border-r-4 sticky px-8 min-h-[90vh] md:flex flex-col hidden">
-            <div class="p-4 border-b">
-                <h2 class="text-lg font-semibold">Filters</h2>
-            </div>
-            <div class="p-4 space-y-3">
-                <a href="?filter=completed&search={{ search_query|default_if_none:'' }}" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-check-circle"></i> Completed</a>
-                <a href="?filter=ongoing&search={{ search_query|default_if_none:'' }}" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-clock"></i> Ongoing</a>
-                <a href="?filter=upcoming&search={{ search_query|default_if_none:'' }}" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-calendar-alt"></i> Upcoming</a>
-                <a href="{% url 'add-auction' %}" class="block text-gray-600 hover:text-[#cf1cc4]"><i class="fas fa-plus"></i> Add Item to Auction</a>
-            </div>
+<div class="flex flex-col md:flex-row gap-6">
+    <!-- Sidebar Filters -->
+    <aside class="w-full md:w-64 flex-shrink-0">
+        <div class="glass-panel rounded-2xl p-6 sticky top-24">
+            <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <i class="fas fa-filter text-fuchsia-500"></i> Filters
+            </h2>
+            <nav class="space-y-2">
+                <a href="?filter=upcoming&search={{ search_query|default_if_none:'' }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {% if filter_type == 'upcoming' %}bg-fuchsia-100 text-fuchsia-700 font-bold shadow-sm{% else %}text-slate-600 hover:bg-white/50 hover:text-fuchsia-600{% endif %}">
+                    <i class="fas fa-calendar-alt w-5"></i> Upcoming
+                </a>
+                <a href="?filter=ongoing&search={{ search_query|default_if_none:'' }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {% if filter_type == 'ongoing' %}bg-fuchsia-100 text-fuchsia-700 font-bold shadow-sm{% else %}text-slate-600 hover:bg-white/50 hover:text-fuchsia-600{% endif %}">
+                    <i class="fas fa-clock w-5"></i> Ongoing
+                </a>
+                <a href="?filter=completed&search={{ search_query|default_if_none:'' }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {% if filter_type == 'completed' %}bg-fuchsia-100 text-fuchsia-700 font-bold shadow-sm{% else %}text-slate-600 hover:bg-white/50 hover:text-fuchsia-600{% endif %}">
+                    <i class="fas fa-check-circle w-5"></i> Completed
+                </a>
+
+                <div class="pt-4 mt-4 border-t border-slate-200/50">
+                    <a href="{% url 'create_auction' %}"
+                        class="glass-btn w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold">
+                        <i class="fas fa-plus"></i> New Auction
+                    </a>
+                </div>
+            </nav>
         </div>
-        <div class="col-span-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-[24px] my-[24px]">
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-grow">
+        <div class="mb-8 flex items-center justify-between">
+            <h1 class="text-3xl font-extrabold text-slate-900">My Auctions</h1>
+            <span
+                class="px-4 py-1.5 rounded-full bg-white/60 text-slate-600 text-sm font-medium border border-white/40 shadow-sm">
+                {{ auction_list|length }} Items
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for auction in auction_list %}
-            <a href="{% url 'auction-detail' auction.id %}">
-            <div class="bg-white shadow-md rounded-lg p-4 border hover:cursor-pointer hover:shadow-[#cf1cc4] h-[335px] ">
-                <img src="{{ auction.image.url }}" alt="Item Image" class="rounded-xl w-full h-48 object-cover">
-                <hr/>
-                <div class="p-2">
-                    <h3 class="text-lg font-semibold">{{auction.name}}</h3>
-                    <p class="text-gray-600 text-sm">End Time: {{ auction.ending_date }}</p>
-                    <button class="mt-2 bg-[#cf1cc4] hover:bg-[#a12699] text-white px-4 py-2 rounded-full">View Details</button>
+            <div
+                class="glass-panel rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 relative border border-white/60 flex flex-col h-full">
+                <!-- Image -->
+                <div class="relative aspect-w-16 aspect-h-10 bg-slate-100 overflow-hidden">
+                    {% if auction.image %}
+                    <img src="{{ auction.image.url }}" alt="{{ auction.name }}"
+                        class="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-700">
+                    {% else %}
+                    <div class="flex items-center justify-center h-full text-slate-300 bg-slate-50">
+                        <i class="fas fa-image text-3xl"></i>
+                    </div>
+                    {% endif %}
+
+                    <!-- Status Badge -->
+                    <div class="absolute top-3 right-3">
+                        {% if auction.is_closed %}
+                        <span
+                            class="px-3 py-1 bg-slate-800/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Closed</span>
+                        {% else %}
+                        <span
+                            class="px-3 py-1 bg-emerald-500/90 text-white text-xs font-bold rounded-full backdrop-blur-sm shadow-lg animate-pulse">Live</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-5 flex-grow flex flex-col">
+                    <h3
+                        class="text-lg font-bold text-slate-800 mb-2 line-clamp-1 group-hover:text-fuchsia-600 transition-colors">
+                        {{ auction.name }}
+                    </h3>
+
+                    <div class="mt-auto space-y-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500">Base Price</span>
+                            <span class="font-bold text-fuchsia-600">${{ auction.base_price }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500">Ends</span>
+                            <span class="font-medium text-slate-700">{{ auction.ending_date|date:"M d, H:i" }}</span>
+                        </div>
+
+                        <a href="{% url 'auction_detail' auction.id %}"
+                            class="block w-full text-center py-2.5 rounded-xl text-sm font-bold text-indigo-500 bg-indigo-50 hover:bg-indigo-100 transition-colors">
+                            Manage Auction
+                        </a>
+                    </div>
                 </div>
             </div>
-        </a>
+            {% empty %}
+            <div class="col-span-full py-12 text-center glass-panel rounded-3xl">
+                <div
+                    class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                    <i class="fas fa-box-open text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-700">No auctions found</h3>
+                <p class="text-slate-500 mt-2 mb-6">You haven't listed any auctions matching these filters.</p>
+                <a href="{% url 'create_auction' %}"
+                    class="inline-flex glass-btn px-6 py-2.5 rounded-xl text-sm font-bold items-center gap-2">
+                    <i class="fas fa-plus"></i> Create Your First Auction
+                </a>
+            </div>
             {% endfor %}
         </div>
-    </section>
+    </div>
 </div>
-{% include "footer.html" %}
 {% endblock %}

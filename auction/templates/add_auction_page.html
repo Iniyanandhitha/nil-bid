@@ -2,72 +2,130 @@
 {% load static %}
 
 {% block title %}
-    Add Auction
+Add Auction
 {% endblock title %}
 
-{% block style %}
-    <style>
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            letter-spacing: 1px;
-        }
-        input,textarea {
-            display: block;
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: none;
-            background-color: #f3f3f3 !important;
-            border-radius: .8rem !important; 
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        input:focus,textarea:focus,input[type="file"]:focus {
-            border-color: #cf1cc4 !important; 
-            box-shadow: 0 0 0 2px rgba(207, 28, 196, 0.4) !important; 
-        }
-        input[type="file"]::file-selector-button{
-            background-color: #ccc;
-            padding: 10px 20px;
-            border:none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
-{% endblock style %}
-
 {% block body %}
-    <div class="h-screen flex justify-center items-center bg-gray-50 flex-col gap-2 my-16">
-        <div class="p-12 px-24  rounded-3xl shadow-xl max-w-[60vw] w-full bg-white">
-            <h1 class="text-5xl font-bold text-center mb-6 ">Create Auction</h1>
-            <form method="post" enctype="multipart/form-data" class="space-y-3">
-                {% csrf_token %}
-                <div class="gap-1 flex flex-col font-medium">
-                    <label>Name:</label>
-                    {{form.name}}
-                    {% for error in form.name.errors %}{% endfor %}
-                </div>
-                <div class="gap-1 flex flex-col font-medium">
-                    <label >Description:</label>
-                    {{form.description}}
-                    {% for error in form.description.errors %}{% endfor %}
-                </div>
-                <div class="gap-1 flex flex-col font-medium">
-                    <label>Image:</label>
-                    {{form.image}}
-                    {% for error in form.image.errors %}{% endfor %}
-                </div>
-                <div class="gap-1 flex flex-col font-medium">
-                    <label>Base Price:</label>
-                    {{form.base_price}}
-                    {% for error in form.base_price.errors %}{% endfor %}
-                </div>
-                <button type="submit" class="w-full mt-10 py-2 px-4 border border-transparent rounded-3xl shadow-sm text-lg font-semibold text-white bg-[#cf1cc4] hover:bg-[#a12699] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#cf1cc4]">Create Auction</button>
-
-            </form>
+<div class="min-h-[85vh] flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+    <div
+        class="w-full max-w-2xl glass-panel rounded-3xl shadow-[0_0_50px_rgba(79,70,229,0.15)] border border-white/10 p-8 sm:p-12 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fuchsia-500 via-indigo-500 to-cyan-500">
         </div>
-    </div>
-    {% include "footer.html" %}
 
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                Create Auction</h1>
+            <p class="mt-2 text-slate-400 font-light">List your asset for secure, anonymous bidding interaction.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="space-y-6">
+                <!-- Name Field -->
+                <div>
+                    <label for="{{ form.name.id_for_label }}"
+                        class="block text-sm font-bold text-slate-300 mb-2 uppercase tracking-wider">
+                        Item Name
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <!-- Loop through fields -->
+                    {% for field in form %}
+                    <div class="group">
+                        <label for="{{ field.id_for_label }}"
+                            class="block text-sm font-bold text-slate-700 mb-2 group-hover:text-fuchsia-600 transition-colors">
+                            {{ field.label }}
+                        </label>
+                        <div class="relative">
+                            {{ field }}
+                            <!-- Focus border animation container handled by CSS -->
+                        </div>
+                        {% if field.help_text %}
+                        <p class="mt-2 text-xs text-slate-500">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% if field.errors %}
+                        <p class="mt-2 text-sm text-red-500 font-medium flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i> {{ field.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit"
+                        class="w-full glass-btn py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                        <i class="fas fa-rocket"></i> Launch Auction
+                    </button>
+                    <p class="mt-4 text-center text-xs text-slate-400">
+                        By launching, you agree to the <a href="#"
+                            class="text-indigo-500 hover:text-indigo-600 underline">Terms of Secured Auctioning</a>.
+                    </p>
+                </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Custom Form Styles for Django Inputs */
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    textarea,
+    select {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.6);
+        border: 1px solid #cbd5e1;
+        /* slate-300 */
+        border-radius: 0.75rem;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        color: #1e293b;
+        /* slate-800 */
+        transition: all 0.3s ease;
+        backdrop-filter: blur(4px);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #d946ef;
+        /* fuchsia-500 */
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.1);
+    }
+
+    input[type="file"] {
+        padding: 0.5rem;
+        background-color: #f8fafc;
+    }
+
+    input[type="file"]::file-selector-button {
+        background-image: linear-gradient(to right, #e0e7ff, #f3e8ff);
+        color: #4f46e5;
+        font-weight: bold;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        margin-right: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-image: linear-gradient(to right, #c7d2fe, #e9d5ff);
+    }
+
+    /* Style checkboxes if any */
+    input[type="checkbox"] {
+        height: 1.25rem;
+        width: 1.25rem;
+        border-radius: 0.25rem;
+        border-color: #cbd5e1;
+        color: #d946ef;
+    }
+</style>
 {% endblock body %}

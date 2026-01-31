@@ -13,7 +13,7 @@ class UserSignupForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES, required=True)
     class Meta:
         model = CustomUser
-        fields = ['username','user_type', 'password1', 'password2']
+        fields = ['username']
 
     def save(self, commit=True):
         user = super().save(commit=False)

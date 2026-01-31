@@ -1,48 +1,120 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Login
+Login - BidSecure
 {% endblock title %}
 
-{% block style %}
-    <style>
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            letter-spacing: 1px;
-        }
-        input {
-            display: block;
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: none;
-            background-color: #f3f3f3 !important;
-            border-radius: .8rem !important; 
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        input:focus {
-            border-color: #cf1cc4 !important; 
-            box-shadow: 0 0 0 2px rgba(207, 28, 196, 0.4) !important; 
-        }
-    </style>
-{% endblock style %}
-
 {% block body %}
-    <div class="bg-gray-100 flex items-center justify-center min-h-screen">
-        <div class="p-8 px-12 bg-white rounded-2xl shadow-lg max-w-md w-full">
-            <h2 class="text-4xl font-bold text-center mb-6">Login</h2>
-            <form method="post" class="space-y-6">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-3xl shadow-sm text-lg font-semibold text-white bg-[#cf1cc4] hover:bg-[#a12699] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#cf1cc4]">Login</button>
-                <div class="text-center flex gap-4 flex-col">
-                    <div class="block font-medium text-gray-600">Forgot password?</div>
-                    <a href="{% url 'signup' %}" class="block font-medium text-[#cf1cc4] hover:text-[#a12699]">Sign up</a>
+<div class="flex items-center justify-center min-h-[85vh] py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="max-w-md w-full glass-panel rounded-3xl p-10 relative overflow-hidden shadow-2xl">
+        <!-- Decorative bg gradient -->
+        <div
+            class="absolute top-0 right-0 w-32 h-32 bg-fuchsia-100 rounded-full filter blur-2xl opacity-60 -z-10 translate-x-1/2 -translate-y-1/2">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100 rounded-full filter blur-2xl opacity-60 -z-10 -translate-x-1/2 translate-y-1/2">
+        </div>
+
+        <div class="text-center">
+            <h2 class="mt-2 text-3xl font-extrabold text-slate-800">
+                Welcome Back
+            </h2>
+            <p class="mt-2 text-sm text-slate-500">
+                Sign in to access secure auctions
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            <div class="space-y-5">
+                {% for field in form %}
+                <div class="group">
+                    <label for="{{ field.id_for_label }}"
+                        class="block text-sm font-bold text-slate-700 mb-1 group-hover:text-fuchsia-600 transition-colors">
+                        {{ field.label }}
+                    </label>
+                    <div class="mt-1">
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-500 font-medium flex items-center gap-1">
+                        <i class="fas fa-exclamation-circle"></i> {{ field.errors.0 }}
+                    </p>
+                    {% endif %}
                 </div>
-            </form>
+                {% endfor %}
+            </div>
+
+            <div class="flex items-center justify-between mt-6">
+                <div class="flex items-center">
+                    <input id="remember-me" name="remember-me" type="checkbox"
+                        class="h-4 w-4 text-fuchsia-600 focus:ring-fuchsia-500 border-slate-300 rounded bg-white">
+                    <label for="remember-me" class="ml-2 block text-sm text-slate-600 font-medium">
+                        Remember me
+                    </label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="#" class="font-bold text-indigo-500 hover:text-indigo-600 transition-colors">
+                        Forgot password?
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-3.5 px-4 rounded-xl text-lg font-bold text-white glass-btn shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-indigo-100 group-hover:text-white transition-colors"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Sign in
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-8 text-center border-t border-slate-200 pt-6">
+            <p class="text-sm text-slate-500">
+                Don't have an account?
+                <a href="{% url 'signup' %}"
+                    class="font-bold text-fuchsia-500 hover:text-fuchsia-600 transition-colors ml-1">
+                    Sign up for free
+                </a>
+            </p>
         </div>
     </div>
-{% endblock body %}
+</div>
 
+<style>
+    /* Target input fields generated by Django */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        appearance: none;
+        background-color: rgba(255, 255, 255, 0.6);
+        border: 1px solid #cbd5e1;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        font-size: 1rem;
+        width: 100%;
+        display: block;
+        color: #1e293b;
+        transition: all 0.2s;
+        backdrop-filter: blur(4px);
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        outline: none;
+        border-color: #d946ef;
+        box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.1);
+        background-color: #ffffff;
+    }
+</style>
+{% endblock body %}
